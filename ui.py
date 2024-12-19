@@ -1,9 +1,11 @@
 from tkinter import *
+from quiz_brain import QuizBrain
 
 THEME_COLOR = "#375362"
 
 class QuizInterface:
-    def __init__(self):
+    def __init__(self, quiz: QuizBrain):
+        self.quiz = quiz
         self.window = Tk()
         self.window.configure(bg=THEME_COLOR)
         self.window.title('Trivia App')
@@ -18,7 +20,7 @@ class QuizInterface:
             text='Are you ready?', 
             font=("Arial", 20, "italic"), 
             fill="black",
-            width=200
+            width=260
             )
         self.canvas.grid(row=1, column=0, columnspan=2, padx=20, pady=20)
         
@@ -29,5 +31,10 @@ class QuizInterface:
         self.correct_btn.grid(row=2, column=0, padx=20, pady=20)
         self.incorrect_btn.grid(row=2, column=1, padx=20, pady=20)
         
-        self.window.mainloop()
+        self.get_next_question()
         
+        self.window.mainloop()
+    
+    def get_next_question(self):
+        question_text = self.quiz.next_question()
+        self.canvas.itemconfig(self.question, text=question_text)
