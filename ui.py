@@ -44,14 +44,24 @@ class QuizInterface:
         self.score_label.config(text=f'Score: {score}')
         
     def is_true(self) -> None:
-        self.quiz.check_answer('true')
-        self.get_next_question()
+        answer = self.quiz.check_answer('true')
+        self.feedback_color(answer)
+        self.window.after(1000, self.get_next_question)
+        self.reset_color()
         self.update_score()
       
     def is_false(self) -> None:
-        self.quiz.check_answer('false')
-        self.get_next_question()
+        answer = self.quiz.check_answer('false')
+        self.feedback_color(answer)
+        self.window.after(1000, self.get_next_question)
+        self.reset_color()
         self.update_score()
-        
-
     
+    def feedback_color(self, answr: bool) -> None:
+        if answr == True:
+            self.canvas.config(background='green')
+        else:
+            self.canvas.config(background='red')
+            
+    def reset_color(self)-> None:
+        self.canvas.config(background='white')
