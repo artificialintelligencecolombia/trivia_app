@@ -36,8 +36,14 @@ class QuizInterface:
         self.window.mainloop()
     
     def get_next_question(self) -> None:
-        question_text = self.quiz.next_question()
-        self.canvas.itemconfig(self.question, text=question_text)
+        self.canvas.config(background='white')
+        if self.quiz.still_has_questions():
+            question_text = self.quiz.next_question()
+            self.canvas.itemconfig(self.question, text=question_text)
+        else:
+            self.canvas.itemconfig(self.question, text='You have completed the quiz')
+            self.correct_btn.config(state='disabled')
+            self.incorrect_btn.config(state='disabled')
         
     def update_score(self) -> None:
         score = self.quiz.score
@@ -46,15 +52,11 @@ class QuizInterface:
     def is_true(self) -> None:
         answer = self.quiz.check_answer('true')
         self.feedback_color(answer)
-        self.window.after(1000, self.get_next_question)
-        self.reset_color()
         self.update_score()
-      
+        
     def is_false(self) -> None:
         answer = self.quiz.check_answer('false')
         self.feedback_color(answer)
-        self.window.after(1000, self.get_next_question)
-        self.reset_color()
         self.update_score()
     
     def feedback_color(self, answr: bool) -> None:
@@ -62,6 +64,5 @@ class QuizInterface:
             self.canvas.config(background='green')
         else:
             self.canvas.config(background='red')
+        self.window.after(1000, self.get_next_question)
             
-    def reset_color(self)-> None:
-        self.canvas.config(background='white')
