@@ -24,12 +24,16 @@ class QuizInterface:
             )
         self.canvas.grid(row=1, column=0, columnspan=2, padx=20, pady=20)
         
+        self.texto_res = Label(text="", font=("Arial", 15))
+        self.texto_res.grid(row = 2, column = 0, columnspan = 2)
+        self.texto_res.grid_forget()
+        
         self.correct_btn_img = PhotoImage(file='./images/true.png')
         self.wrong_btn_img = PhotoImage(file='./images/false.png')
-        self.correct_btn = Button(image=self.correct_btn_img, command=self.is_true)
-        self.incorrect_btn = Button(image=self.wrong_btn_img, command=self.is_false)
-        self.correct_btn.grid(row=2, column=0, padx=20, pady=20)
-        self.incorrect_btn.grid(row=2, column=1, padx=20, pady=20)
+        self.correct_btn = Button(image=self.correct_btn_img, command=self.btn_verde)
+        self.incorrect_btn = Button(image=self.wrong_btn_img, command=self.btn_rojo)
+        self.correct_btn.grid(row=3, column=0, padx=20, pady=20)
+        self.incorrect_btn.grid(row=3, column=1, padx=20, pady=20)
         
         self.get_next_question()
         
@@ -37,6 +41,7 @@ class QuizInterface:
     
     def get_next_question(self) -> None:
         self.canvas.config(background='white')
+        self.texto_res.grid_forget()
         if self.quiz.still_has_questions():
             question_text = self.quiz.next_question()
             self.canvas.itemconfig(self.question, text=question_text)
@@ -49,20 +54,24 @@ class QuizInterface:
         score = self.quiz.score
         self.score_label.config(text=f'Score: {score}')
         
-    def is_true(self) -> None:
+    def btn_verde(self) -> None:
         answer = self.quiz.check_answer('true')
-        self.feedback_color(answer)
+        self.feedback(answer)
         self.update_score()
         
-    def is_false(self) -> None:
+    def btn_rojo(self) -> None:
         answer = self.quiz.check_answer('false')
-        self.feedback_color(answer)
+        self.feedback(answer)
         self.update_score()
     
-    def feedback_color(self, answr: bool) -> None:
+    def feedback(self, answr: bool) -> None:
         if answr == True:
             self.canvas.config(background='green')
+            self.texto_res.config(text="Respuesta Correcta", fg="green")
+            self.texto_res.grid(row = 2, column = 0, columnspan = 2)
         else:
             self.canvas.config(background='red')
+            self.texto_res.config(text="Respuesta Incorrecta", fg="red")
+            self.texto_res.grid(row = 2, column = 0, columnspan = 2)
         self.window.after(1000, self.get_next_question)
-            
+        
